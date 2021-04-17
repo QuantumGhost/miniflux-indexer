@@ -1,14 +1,15 @@
 package internal
 
 import (
-	"github.com/jackc/pgtype"
 	"time"
 )
 
+type Metadata struct{}
+
 type IndexInfo struct {
-	ID        int64        `db:"id" json:"id"`
-	IndexedAt time.Time    `db:"indexed_at" json:"indexed_at"`
-	Meta      pgtype.JSONB `db:"meta" json:"meta"`
+	ID        int64     `db:"id" json:"id"`
+	IndexedAt time.Time `db:"indexed_at" json:"indexed_at"`
+	Meta      Metadata  `db:"meta"`
 }
 
 type Entry struct {

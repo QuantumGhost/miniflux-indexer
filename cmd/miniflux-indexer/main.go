@@ -8,6 +8,7 @@ import (
 	"github.com/urfave/cli/v2"
 	"os"
 	"os/signal"
+	"syscall"
 )
 
 const (
@@ -53,6 +54,14 @@ func startCmd() *cli.Command {
 			EnvVars:     []string{envName("SCAN_INTERVAL")},
 			Destination: &config.ScanInterval,
 			Value:       internal.DefaultScanInterval,
+			Required:    false,
+		},
+		&cli.IntFlag{
+			Name:        "batch-size",
+			Usage:       "number of entries indexed per batch",
+			EnvVars:     []string{envName("BATCH_SIZE")},
+			Destination: &config.BatchSize,
+			Value:       internal.DefaultBatchSize,
 			Required:    false,
 		},
 	}
@@ -103,13 +112,13 @@ func main() {
 
 	go func() {
 		sigCh := make(chan os.Signal, 1)
-		signal.Notify(sigCh)
+		signal.Notify(sigCh, syscall.SIGINT)
 		<-sigCh
 		cancel()
 	}()
 	err := app.RunContext(ctx, os.Args)
 	if err != nil && err != context.Canceled {
-		log.Error().Err(err).Msg("error while executing indexer")
+		log.Error().Stack().Err(err).Msg("error while executing indexer")
 		os.Exit(1)
 	}
 	os.Exit(0)
