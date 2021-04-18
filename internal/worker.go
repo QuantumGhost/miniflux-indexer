@@ -35,8 +35,8 @@ func NewWorker(ctx context.Context, config Config) *Worker {
 func upsertIndexInfo(ctx context.Context, runner pgxtype.Querier, id int64, language string, meta Metadata) error {
 	// language: sql
 	const upsertIndexInfoSQL = `
-INSERT INTO index_info (id, language, meta) VALUES ($1, $2, $3)
-ON CONFLICT (id) DO UPDATE SET language = $2, meta = $3
+INSERT INTO index_info (id, indexed_at, language, meta) VALUES ($1, CURRENT_TIMESTAMP, $2, $3)
+ON CONFLICT (id) DO UPDATE SET language = $2, meta = $3, indexed_at = CURRENT_TIMESTAMP
 `
 	jsonb := pgtype.JSONB{}
 	err := jsonb.Set(meta)
