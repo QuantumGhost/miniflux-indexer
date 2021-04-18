@@ -67,10 +67,14 @@ WHERE id = $3`
 	}
 	lang := whatlanggo.DetectLang(simplified.TextContent)
 	if lang != whatlanggo.Cmn {
+		ctx, cancel := context.WithTimeout(ctx, defaultTimeout)
+		defer cancel()
 		return upsertIndexInfo(ctx, w.infoDB, entry.ID, lang.Iso6391(), Metadata{})
 	}
 	titleSeg := segmenter.Segment([]byte(entry.Title))
 	contentSeg := segmenter.Segment([]byte(simplified.TextContent))
+	ctx, cancel := context.WithTimeout(ctx, defaultTimeout)
+	defer cancel()
 	_, err = minifluxDB.Exec(
 		ctx, updateDocVectorSQL,
 		strings.Join(sego.SegmentsToSlice(titleSeg, false), " "),
@@ -89,8 +93,7 @@ func (w *Worker) indexWorker(jobChan <-chan Entry) {
 	for {
 		select {
 		case entry := <-jobChan:
-			ctx, _ := context.WithTimeout(w.parentCtx, defaultTimeout)
-			err := w.indexEntry(ctx, entry, &segmenter)
+			err := w.indexEntry(w.parentCtx, entry, &segmenter)
 			if err != nil {
 				log.Error().Stack().Err(err).Msg("error while index entry")
 			}
