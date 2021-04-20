@@ -1,5 +1,7 @@
 # Miniflux Indexer
 
+[中文版](./README-zh.md)
+
 - [Deployment](#deployment)
 - [Configurations](#configurations)
 
