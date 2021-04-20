@@ -12,7 +12,7 @@ Requirements:
 
 - PostgresQL >= 9.6
 
-First you should check your miniflux database and ensure it's
+First, you should check your miniflux database and ensure it's
 [Collate](https://www.postgresql.org/docs/current/collation.html) is `C.UTF-8` by using the following command:
 
 ```bash
@@ -31,7 +31,7 @@ The output likes the following table:
 
 If it's not `C.UTF-8`, you should convert it to `C.UTF-8` or the indexer won't work.
 
-Then you need to create a table named `index_info` for storing indexer related information. It's highly 
+Then you need to create a table named `index_info` for storing indexer-related information. It's highly 
 recommended using a separate database or schema from miniflux.
 
 You may create a new database using the following command:
@@ -52,7 +52,7 @@ Then you can get miniflux-indexer running by using the following command:
 miniflux-indexer start --database-url $DATABASE_URL --miniflux-database-url $MINIFLUX_DATABASE_URL
 ```
 
-The first run may consume more than 1 GB memory, please ensure you have enough memory.
+The first run may consume more than 1 GB of memory, please ensure you have enough memory.
 
 ## Configurations
 
